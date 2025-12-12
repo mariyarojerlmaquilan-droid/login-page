@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body { font-family: Arial, sans-serif; background: #f8f8f8; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+.container { background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 350px; text-align: center; }
+input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; }
+button { width: 100%; padding: 10px; margin-top: 10px; border: none; background: #007bff; color: white; border-radius: 5px; cursor: pointer; font-size: 16px; }
+button:hover { background: #0056b3; }
+.message { margin-top: 10px; color: red; font-size: 14px; }
+.success { color: green; margin-top: 10px; font-size: 14px; }
+.link { margin-top: 10px; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Login</h2>
+  <input id="login-email" type="email" placeholder="Email">
+  <input id="login-password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <div class="message" id="login-error"></div>
+  <p class="link">No account? <a href="register.html">Sign Up</a></p>
+  <div class="success" id="success-msg"></div>
+</div>
+
+<script>
+const supabaseUrl = 'https://vjhoahthcaojzharxbzh.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqaG9haHRoY2FvanpoYXJ4YnpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwNzY0MjEsImV4cCI6MjA4MDY1MjQyMX0.W72UylnW9DGY35S6FuaNNgSPm0biesz7CXzdxTSMbwA';
+const redirectUrl = 'https://sites.google.com/view/sijuana/home';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+async function login(){
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if(error){
+    document.getElementById('login-error').textContent = error.message;
+  } else {
+    document.getElementById('success-msg').textContent = "Login successful! Redirecting...";
+    setTimeout(() => { window.location.href = redirectUrl; }, 1000);
+  }
+}
+
+// Auto redirect if already logged in
+supabase.auth.getSession().then(({data}) => {
+  if(data.session){
+    window.location.href = redirectUrl;
+  }
+});
+</script>
+
+</body>
+</html>
