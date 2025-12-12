@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home - Secured</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body { font-family: Arial, sans-serif; background:#f5f5f5; margin:0; padding:20px; }
+header { display:flex; justify-content:space-between; align-items:center; background:#007bff; color:white; padding:10px 20px; border-radius:5px; }
+button { padding:8px 12px; background:#ff4b5c; color:white; border:none; border-radius:5px; cursor:pointer; }
+button:hover { background:#c73849; }
+.container { margin-top:20px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h2>Welcome</h2>
+  <button onclick="logout()">Logout</button>
+</header>
+
+<div class="container">
+  <h3>Secured Content</h3>
+  <p>This content is only visible to logged-in users.</p>
+</div>
+
+<script>
+const supabaseUrl = 'https://vjhoahthcaojzharxbzh.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqaG9haHRoY2FvanpoYXJ4YnpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwNzY0MjEsImV4cCI6MjA4MDY1MjQyMX0.W72UylnW9DGY35S6FuaNNgSPm0biesz7CXzdxTSMbwA';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+async function checkAuth(){
+  const { data } = await supabase.auth.getSession();
+  if(!data.session){
+    window.location.href = 'login.html';
+  }
+}
+checkAuth();
+
+async function logout(){
+  await supabase.auth.signOut();
+  window.location.href = 'login.html';
+}
+</script>
+
+</body>
+</html>
