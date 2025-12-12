@@ -50,10 +50,10 @@ button:hover { background:#c3aab6; color:#333; }
 const SUPABASE_URL = "https://vjhoahthcaojzharxbzh.supabase.co";    
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqaG9haHRoY2FvanpoYXJ4YnpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUwNzY0MjEsImV4cCI6MjA4MDY1MjQyMX0.W72UylnW9DGY35S6FuaNNgSPm0biesz7CXzdxTSMbwA"; 
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Set this to your Google Sites homepage
+const HOME_PAGE = "https://sites.google.com/view/sijuana/home";
 
-// Your Google Sites homepage URL
-const HOME_PAGE = "https://sites.google.com/view/juanatest/home-page";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Toggle Boxes
 function showSignUp(){ document.getElementById("signupBox").style.display="block"; document.getElementById("loginBox").style.display="none"; }
@@ -62,7 +62,7 @@ function showLogin(){ document.getElementById("signupBox").style.display="none";
 // Loading effect
 function setLoading(btn,isLoading,text){ btn.disabled=isLoading; btn.innerText=isLoading?"Please wait...":text; }
 
-// ----- Sign Up -----
+// Sign Up
 async function signUp(){
     let email=document.getElementById("newUser").value;
     let password=document.getElementById("newPass").value;
@@ -75,33 +75,41 @@ async function signUp(){
         return; 
     }
 
-    const { data,error } = await supabaseClient.auth.signUp({ email,password });
+    const {data,error}=await supabaseClient.auth.signUp({email,password});
     if(error){ 
-        document.getElementById("signupError").innerText = error.message; 
+        document.getElementById("signupError").innerText=error.message; 
         setLoading(btn,false,"Create Account"); 
         return; 
     }
 
-    // Signup successful → redirect
-    window.top.location.href = HOME_PAGE;
+    document.getElementById("signupError").innerText="";
+    document.getElementById("successMessage").innerText="Account created!";
+    document.getElementById("successMessage").style.display="block";
+    setTimeout(()=>{ document.getElementById("successMessage").style.display="none"; showLogin(); },1500);
+    setLoading(btn,false,"Create Account");
 }
 
-// ----- Login -----
+// Login
 async function login(){
     let email=document.getElementById("loginUser").value;
     let password=document.getElementById("loginPass").value;
     let btn=document.querySelector("#loginBox button");
     setLoading(btn,true,"Login");
 
-    const { data,error } = await supabaseClient.auth.signInWithPassword({ email,password });
+    const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
     if(error){ 
-        document.getElementById("loginError").innerText = error.message; 
+        document.getElementById("loginError").innerText=error.message; 
         setLoading(btn,false,"Login"); 
         return; 
     }
 
-    // Login successful → redirect
-    window.top.location.href = HOME_PAGE;
+    setLoading(btn,false,"Login");
+    document.getElementById("loginError").innerText="";
+    document.getElementById("successMessage").innerText="Welcome! Login successful!";
+    document.getElementById("successMessage").style.display="block";
+
+    // Redirect top-level window to Google Sites homepage
+    setTimeout(()=>{ window.top.location.href = HOME_PAGE; },1000);
 }
 
 // Auto-check session
